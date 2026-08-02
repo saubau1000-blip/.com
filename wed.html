@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GHUY VIP - Dual Script Hub</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{background:#050510;font-family:'Segoe UI',system-ui,sans-serif;color:#fff;min-height:100vh;overflow-x:hidden}
+        .stars{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0}
+        .star{position:absolute;background:#ffaa30;border-radius:50%;animation:t var(--d) ease-in-out infinite;animation-delay:var(--dl)}
+        @keyframes t{0%,100%{opacity:.3;transform:scale(1)}50%{opacity:1;transform:scale(1.5)}}
+        .main{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:20px}
+        .logo{text-align:center;margin-bottom:20px;animation:fd 1s ease-out}
+        @keyframes fd{from{opacity:0;transform:translateY(-50px)}to{opacity:1;transform:translateY(0)}}
+        .logo-letters{display:flex;justify-content:center;gap:10px;margin-bottom:10px}
+        .logo-letter{font-size:100px;font-weight:900;font-family:'Georgia',serif;color:#ffd21e;text-shadow:0 0 40px rgba(255,80,0,.8),0 0 80px rgba(255,40,0,.4),3px 3px 0 #000;animation:lb 2s ease-in-out infinite;animation-delay:calc(var(--i)*.15s)}
+        @keyframes lb{0%,100%{transform:translateY(0)}50%{transform:translateY(-15px)}}
+        .vip-text{font-size:34px;font-weight:900;color:#ff1e1e;text-shadow:0 0 30px rgba(255,0,0,.8);letter-spacing:10px;margin-bottom:6px}
+        .subtitle{font-size:14px;color:#ffc88c;letter-spacing:2px}
+        .divider{display:flex;align-items:center;justify-content:center;gap:12px;margin:15px 0}
+        .divider .line{width:60px;height:2px;background:linear-gradient(90deg,transparent,#ff7800,transparent)}
+        .divider .diamond{color:#ffb428;font-size:13px}
+
+        /* Tab System */
+        .tab-container{width:100%;max-width:800px;animation:fu 1s ease-out .3s both}
+        @keyframes fu{from{opacity:0;transform:translateY(50px)}to{opacity:1;transform:translateY(0)}}
+        .tabs{display:flex;gap:5px;margin-bottom:0}
+        .tab-btn{flex:1;padding:14px;background:rgba(20,15,40,.8);border:2px solid rgba(255,150,30,.3);border-bottom:none;border-radius:14px 14px 0 0;color:#ffc88c;font-weight:700;font-size:14px;cursor:pointer;transition:all .3s;text-align:center}
+        .tab-btn.active{background:linear-gradient(135deg,#141025,#0e0c1f);border-color:rgba(255,150,30,.6);color:#ffd21e;box-shadow:0 -5px 20px rgba(255,100,0,.15)}
+        .tab-btn:hover:not(.active){background:rgba(30,20,50,.9);border-color:rgba(255,150,30,.5)}
+        .tab-content{display:none;background:linear-gradient(135deg,#141025,#0e0c1f,#16102a);border:2px solid rgba(255,150,30,.3);border-top:none;border-radius:0 0 20px 20px;padding:25px;box-shadow:0 0 30px rgba(255,100,0,.15),0 20px 60px rgba(0,0,0,.5)}
+        .tab-content.active{display:block}
+        .script-header{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+        .script-header .icon{font-size:24px}
+        .script-header h2{font-size:18px;font-weight:800;background:linear-gradient(135deg,#ffb840,#ff8800);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+        .script-code{background:#0a0914;border:1px solid rgba(255,150,30,.2);border-radius:12px;padding:15px;max-height:300px;overflow-y:auto;position:relative}
+        .script-code pre{color:#ccc;font-family:'Consolas','Monaco',monospace;font-size:10px;line-height:1.3;white-space:pre-wrap;word-break:break-all;user-select:all}
+        .copy-btn{position:absolute;top:10px;right:10px;background:linear-gradient(135deg,#ff8c00,#ff6600);border:none;color:#fff;padding:8px 16px;border-radius:20px;cursor:pointer;font-weight:700;font-size:12px;transition:all .3s;z-index:10;box-shadow:0 5px 20px rgba(255,100,0,.3)}
+        .copy-btn:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(255,100,0,.5)}
+        .copy-btn.copied{background:linear-gradient(135deg,#28a745,#20c997)}
+
+        .key-section{background:linear-gradient(135deg,#1a1030,#120c24);border:2px solid rgba(255,80,80,.3);border-radius:16px;padding:20px;width:100%;max-width:800px;margin-top:18px;text-align:center;animation:fu 1s ease-out .6s both}
+        .key-section h3{font-size:17px;font-weight:800;color:#ff4444;margin-bottom:10px}
+        .key-display{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}
+        .key-box{background:#0a0914;border:2px dashed rgba(255,150,30,.5);border-radius:12px;padding:12px 20px;font-family:'Consolas','Monaco',monospace;font-size:14px;color:#ffd700;user-select:all;transition:all .3s}
+        .key-box:hover{border-color:#ff8800;box-shadow:0 0 25px rgba(255,150,0,.2)}
+        .key-copy-btn{background:linear-gradient(135deg,#dc3545,#c82333);border:none;color:#fff;padding:8px 18px;border-radius:20px;cursor:pointer;font-weight:700;font-size:12px;transition:all .3s;box-shadow:0 5px 20px rgba(220,53,69,.3)}
+        .key-copy-btn:hover{transform:translateY(-2px)}
+        .key-copy-btn.copied{background:linear-gradient(135deg,#28a745,#20c997)}
+        .features{display:flex;gap:15px;flex-wrap:wrap;justify-content:center;margin-top:15px;animation:fu 1s ease-out .9s both}
+        .feature-card{background:rgba(20,15,40,.8);border:1px solid rgba(255,150,30,.2);border-radius:10px;padding:14px 18px;text-align:center;min-width:100px;transition:all .3s}
+        .feature-card:hover{transform:translateY(-5px);border-color:rgba(255,150,30,.6);box-shadow:0 10px 30px rgba(255,100,0,.2)}
+        .feature-card .icon{font-size:28px;margin-bottom:4px}
+        .feature-card .name{font-size:12px;font-weight:700;color:#ffc88c}
+        .toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#28a745;color:#fff;padding:12px 25px;border-radius:30px;font-weight:700;z-index:999;animation:sd .5s ease-out}
+        @keyframes sd{from{opacity:0;transform:translateX(-50%) translateY(-30px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+        .tag{display:inline-block;background:rgba(255,150,30,.2);color:#ffb840;padding:3px 10px;border-radius:10px;font-size:10px;font-weight:700;margin-left:8px}
+        @media(max-width:768px){.logo-letter{font-size:55px}.vip-text{font-size:24px}.tabs{flex-direction:column}.tab-btn{border-radius:10px;border-bottom:2px solid rgba(255,150,30,.3)}.tab-btn.active{border-radius:10px 10px 0 0}.key-box{font-size:12px;padding:10px 14px}}
+    </style>
+</head>
+<body>
+
+    <div class="stars" id="stars"></div>
+
+    <div class="main">
+        
+        <div class="logo">
+            <div class="logo-letters">
+                <span class="logo-letter" style="--i:1">G</span>
+                <span class="logo-letter" style="--i:2">H</span>
+                <span class="logo-letter" style="--i:3">U</span>
+                <span class="logo-letter" style="--i:4">Y</span>
+            </div>
+            <div class="vip-text">V I P</div>
+            <div class="divider">
+                <span class="line"></span>
+                <span class="diamond">◆</span>
+                <span class="line"></span>
+            </div>
+            <div class="subtitle">✦ DUAL SCRIPT HUB | FLY | ESP | NOCLIP | WAYPOINT ✦</div>
+        </div>
+
+        <!-- TABS -->
+        <div class="tab-container">
+            <div class="tabs">
+                <button class="tab-btn active" onclick="switchTab('tab1', this)">🐟 GHUY VIP v5.1 <span class="tag">FLY + NOCLIP + WAYPOINT</span></button>
+                <button class="tab-btn" onclick="switchTab('tab2', this)">🛡️ GIA HUY PREMIUM V18 <span class="tag">ESP + ANTI AFK + LOCK BASE</span></button>
+            </div>
+
+            <!-- TAB 1: GHUY VIP v5.1 -->
+            <div class="tab-content active" id="tab1">
+                <div class="script-header">
+                    <span class="icon">🐟</span>
+                    <h2>GHUY VIP v5.1 - Dark Edition</h2>
+                </div>
+                <div class="script-code">
+                    <button class="copy-btn" id="copyBtn1" onclick="copyCode('code1','copyBtn1')">📋 COPY</button>
+                    <pre><code id="code1">if not game:IsLoaded() then game.Loaded:Wait() end
+local P=game:GetService("Players").LocalPlayer
+local U=game:GetService("UserInputService")
+local R=game:GetService("RunService")
+local W=game:GetService("Workspace")
+local T=game:GetService("TweenService")
+local H=game:GetService("HttpService")
+repeat wait() until P:FindFirstChild("PlayerGui")
+
+local VK={"KEYAUTH-DHB7t5-OHANKz-jLLDQC-JDhwJp-Fp6FD9-c9I021","GHUYVIP2024","GHUY_PRO_999"}
+local SK=nil
+pcall(function()if isfile and isfile("gvkey.txt")then SK=readfile("gvkey.txt")end end)
+local function CK(k)for _,v in ipairs(VK)do if k==v then return true end end;return false end
+
+local IG=Instance.new("ScreenGui",P.PlayerGui)IG.Name="GI";IG.ResetOnSpawn=false
+local IB=Instance.new("Frame",IG)IB.Size=UDim2.new(1,0,1,0)IB.BackgroundColor3=Color3.new(0,0,0)IB.BackgroundTransparency=1;IB.ZIndex=1000
+local DO=Instance.new("Frame",IG)DO.Size=UDim2.new(1,0,1,0)DO.BackgroundColor3=Color3.new(0,0,0)DO.BackgroundTransparency=1;DO.ZIndex=1001;DO.Parent=IB
+local SC=Instance.new("Frame",IG)SC.Size=UDim2.new(1,0,1,0)SC.BackgroundTransparency=1;SC.ZIndex=1002;SC.Parent=IB
+local ST={}for i=1,80 do local s=Instance.new("Frame",SC)local sz=math.random(2,8)s.Size=UDim2.new(0,sz,0,sz)s.Position=UDim2.new(math.random(),0,math.random(),0)s.BackgroundColor3=Color3.fromRGB(math.random(200,255),math.random(120,180),math.random(30,80))s.BackgroundTransparency=0.2;s.ZIndex=1003;Instance.new("UICorner",s).CornerRadius=UDim.new(1,0)ST[i]={o=s,sx=math.random()*.4+.15,sy=math.random()*.3+.08,bx=s.Position.X.Scale,by=s.Position.Y.Scale,am=math.random()*.03}end
+local CC=Instance.new("Frame",IB)CC.Size=UDim2.new(0,600,0,380)CC.Position=UDim2.new(0.5,-300,0.5,-190)CC.BackgroundTransparency=1;CC.ZIndex=1010
+local GC=Instance.new("Frame",CC)GC.Size=UDim2.new(0,560,0,170)GC.Position=UDim2.new(0.5,-280,0,0)GC.BackgroundTransparency=1;GC.ZIndex=1011
+local GL={"G","H","U","Y"}local GO={}
+for i,ch in ipairs(GL)do
+    local sd=Instance.new("TextLabel",GC)sd.Size=UDim2.new(0,140,0,160)sd.Position=UDim2.new(0,(i-1)*140-600+5,0,5)sd.BackgroundTransparency=1;sd.Text=ch;sd.TextColor3=Color3.new(0,0,0)sd.TextSize=130;sd.Font=Enum.Font.GothamBlack;sd.TextTransparency=1;sd.ZIndex=1011
+    local ml=Instance.new("TextLabel",GC)ml.Size=UDim2.new(0,140,0,160)ml.Position=UDim2.new(0,(i-1)*140-600,0,0)ml.BackgroundTransparency=1;ml.Text=ch;ml.TextColor3=Color3.fromRGB(255,210,30)ml.TextSize=130;ml.Font=Enum.Font.GothamBlack;ml.TextTransparency=1;ml.TextStrokeTransparency=1;ml.TextStrokeColor3=Color3.fromRGB(255,80,0)ml.Rotation=math.random(-35,35)ml.ZIndex=1014
+    local gl=Instance.new("TextLabel",ml)gl.Size=UDim2.new(0,160,0,180)gl.Position=UDim2.new(0,-10,0,-10)gl.BackgroundTransparency=1;gl.Text=ch;gl.TextColor3=Color3.fromRGB(255,40,0)gl.TextSize=150;gl.Font=Enum.Font.GothamBlack;gl.TextTransparency=1;gl.ZIndex=1012
+    local ol=Instance.new("TextLabel",ml)ol.Size=UDim2.new(0,140,0,160)ol.BackgroundTransparency=1;ol.Text=ch;ol.TextColor3=Color3.new(0,0,0)ol.TextSize=130;ol.Font=Enum.Font.GothamBlack;ol.TextTransparency=1;ol.TextStrokeTransparency=0;ol.TextStrokeColor3=Color3.fromRGB(255,180,50)ol.ZIndex=1013
+    GO[i]={m=ml,g=gl,s=sd,o=ol,tx=(i-1)*140}
+end
+local LL=Instance.new("Frame",CC)LL.Size=UDim2.new(0,100,0,3)LL.Position=UDim2.new(0.5,-320,0,178)LL.BackgroundColor3=Color3.fromRGB(255,120,20)LL.BackgroundTransparency=1;LL.ZIndex=1011
+local LR=Instance.new("Frame",CC)LR.Size=UDim2.new(0,100,0,3)LR.Position=UDim2.new(0.5,220,0,178)LR.BackgroundColor3=Color3.fromRGB(255,120,20)LR.BackgroundTransparency=1;LR.ZIndex=1011
+local DL=Instance.new("TextLabel",CC)DL.Size=UDim2.new(0,24,0,24)DL.Position=UDim2.new(0.5,-312,0,168)DL.BackgroundTransparency=1;DL.Text="◆";DL.TextColor3=Color3.fromRGB(255,180,40)DL.TextSize=18;DL.TextTransparency=1;DL.ZIndex=1012
+local DR=Instance.new("TextLabel",CC)DR.Size=UDim2.new(0,24,0,24)DR.Position=UDim2.new(0.5,288,0,168)DR.BackgroundTransparency=1;DR.Text="◆";DR.TextColor3=Color3.fromRGB(255,180,40)DR.TextSize=18;DR.TextTransparency=1;DR.ZIndex=1012
+local VL=Instance.new("TextLabel",CC)VL.Size=UDim2.new(0,500,0,55)VL.Position=UDim2.new(0.5,-250,0,175)VL.BackgroundTransparency=1;VL.Text="V I P  S Y S T E M";VL.TextColor3=Color3.fromRGB(255,30,30)VL.TextSize=44;VL.Font=Enum.Font.GothamBlack;VL.TextTransparency=1;VL.TextStrokeTransparency=1;VL.ZIndex=1011
+local VG=Instance.new("TextLabel",CC)VG.Size=UDim2.new(0,520,0,65)VG.Position=UDim2.new(0.5,-260,0,170)VG.BackgroundTransparency=1;VG.Text="V I P  S Y S T E M";VG.TextColor3=Color3.fromRGB(200,10,10)VG.TextSize=48;VG.Font=Enum.Font.GothamBlack;VG.TextTransparency=1;VG.ZIndex=1010
+local SUB=Instance.new("TextLabel",CC)SUB.Size=UDim2.new(0,500,0,30)SUB.Position=UDim2.new(0.5,-250,0,235)SUB.BackgroundTransparency=1;SUB.Text="✦ FLY MASTER | NOCLIP | WAYPOINT PRO ✦";SUB.TextColor3=Color3.fromRGB(255,200,140)SUB.TextSize=17;SUB.Font=Enum.Font.GothamSemibold;SUB.TextTransparency=1;SUB.ZIndex=1011
+local KS=Instance.new("Frame",CC)KS.Size=UDim2.new(0,440,0,62)KS.Position=UDim2.new(0.5,-220,0,280)KS.BackgroundColor3=Color3.fromRGB(10,10,28)KS.BackgroundTransparency=1;KS.ZIndex=1011
+Instance.new("UICorner",KS).CornerRadius=UDim.new(0,18)
+local KSS=Instance.new("UIStroke",KS)KSS.Color=Color3.fromRGB(255,140,30)KSS.Thickness=3;KSS.Transparency=1
+local LI=Instance.new("TextLabel",KS)LI.Size=UDim2.new(0,40,1,0)LI.Position=UDim2.new(0,8,0,0)LI.BackgroundTransparency=1;LI.Text="🔐";LI.TextSize=26;LI.ZIndex=1012;LI.TextTransparency=1
+local KI=Instance.new("TextBox",KS)KI.Size=UDim2.new(1,-135,1,0)KI.Position=UDim2.new(0,48,0,0)KI.BackgroundTransparency=1;KI.PlaceholderText="Nhập key của bạn...";KI.PlaceholderColor3=Color3.fromRGB(130,130,150)KI.Text="";KI.TextColor3=Color3.fromRGB(255,255,255)KI.TextSize=17;KI.Font=Enum.Font.GothamSemibold;KI.TextXAlignment=Enum.TextXAlignment.Left;KI.TextTransparency=1;KI.ZIndex=1012
+local KSB=Instance.new("TextButton",KS)KSB.Size=UDim2.new(0,85,0,44)KSB.Position=UDim2.new(1,-93,0,9)KSB.BackgroundColor3=Color3.fromRGB(255,150,20)KSB.Text="MỞ KHÓA";KSB.TextColor3=Color3.fromRGB(255,255,255)KSB.TextSize=14;KSB.Font=Enum.Font.GothamBlack;KSB.BackgroundTransparency=1;KSB.TextTransparency=1;KSB.ZIndex=1012
+Instance.new("UICorner",KSB).CornerRadius=UDim.new(0,12)
+local SL=Instance.new("TextLabel",CC)SL.Size=UDim2.new(0,450,0,30)SL.Position=UDim2.new(0.5,-225,0,355)SL.BackgroundTransparency=1;SL.Text="";SL.TextColor3=Color3.fromRGB(255,255,255)SL.TextSize=15;SL.Font=Enum.Font.GothamSemibold;SL.TextTransparency=1;SL.ZIndex=1011
+
+local SC2=0
+local function SBK()SC2=SC2+1;local k=KI.Text;if k==""then SL.Text="⚠️ Vui lòng nhập key!";SL.TextColor3=Color3.fromRGB(255,200,100);return end;SL.Text="🔄 Đang kiểm tra key...";SL.TextColor3=Color3.fromRGB(255,200,100)
+if CK(k)then SL.Text="✅ Key hợp lệ! Chào mừng GHUY VIP!";SL.TextColor3=Color3.fromRGB(100,255,100)pcall(function()if writefile then writefile("gvkey.txt",k)end end)wait(1)
+for i,ld in ipairs(GO)do local ex=(i%2==0)and-1200 or 1200;T:Create(ld.m,TweenInfo.new(0.5),{Position=UDim2.new(0,ex,0,math.random(-200,200)),Rotation=math.random(-90,90),TextTransparency=1}):Play();T:Create(ld.s,TweenInfo.new(0.5),{Position=UDim2.new(0,ex+5,0,math.random(-200,200)+5),TextTransparency=1}):Play()end
+T:Create(VL,TweenInfo.new(0.3),{TextTransparency=1}):Play()T:Create(VG,TweenInfo.new(0.3),{TextTransparency=1}):Play()T:Create(SUB,TweenInfo.new(0.3),{TextTransparency=1}):Play()
+T:Create(KS,TweenInfo.new(0.3),{BackgroundTransparency=1}):Play()T:Create(KSS,TweenInfo.new(0.3),{Transparency=1}):Play()T:Create(LI,TweenInfo.new(0.3),{TextTransparency=1}):Play()
+T:Create(KI,TweenInfo.new(0.3),{TextTransparency=1}):Play()T:Create(KSB,TweenInfo.new(0.3),{TextTransparency=1,BackgroundTransparency=1}):Play()T:Create(SL,TweenInfo.new(0.3),{TextTransparency=1}):Play()
+T:Create(LL,TweenInfo.new(0.3),{BackgroundTransparency=1}):Play()T:Create(LR,TweenInfo.new(0.3),{BackgroundTransparency=1}):Play()T:Create(DL,TweenInfo.new(0.3),{TextTransparency=1}):Play()T:Create(DR,TweenInfo.new(0.3),{TextTransparency=1}):Play()
+T:Create(IB,TweenInfo.new(0.6),{BackgroundTransparency=1}):Play()T:Create(DO,TweenInfo.new(0.6),{BackgroundTransparency=1}):Play()wait(0.6)IG:Destroy()LMS()
+else SL.Text="❌ Key sai! (Lần: "..SC2..")";SL.TextColor3=Color3.fromRGB(255,80,80)local op=KS.Position;for i=1,6 do KS.Position=UDim2.new(0.5,-220+math.random(-12,12),0,280+math.random(-6,6))wait(0.04)end;KS.Position=op
+if SC2>=3 then SL.Text="💡 Key: KEYAUTH-DHB7t5-OHANKz-jLLDQC-JDhwJp-Fp6FD9-c9I021";SL.TextColor3=Color3.fromRGB(255,255,120)end end end
+KSB.MouseButton1Click:Connect(SBK)KI.FocusLost:Connect(function(e)if e then SBK()end end)
+
+spawn(function()while IG and IG.Parent do for _,sd in ipairs(ST)do local s=sd.o;local nx=sd.bx+math.sin(tick()*sd.sx*3)*sd.am;local ny=sd.by+math.cos(tick()*sd.sy*3)*sd.am;s.Position=UDim2.new(nx,0,ny,0)s.BackgroundTransparency=0.15+math.sin(tick()*2.5)*0.25 end;wait(0.03)end end)
+
+local function PIA()T:Create(IB,TweenInfo.new(0.5),{BackgroundTransparency=0.05}):Play()T:Create(DO,TweenInfo.new(0.5),{BackgroundTransparency=0.15}):Play()wait(0.3)
+for i,ld in ipairs(GO)do local m=ld.m;local sx=(i%2==0)and 1200 or-1200;m.Position=UDim2.new(0,sx,0,math.random(-200,200))m.Rotation=math.random(-180,180)m.TextTransparency=0;m.TextStrokeTransparency=0.5
+ld.s.Position=UDim2.new(0,sx+5,0,math.random(-200,200)+5)ld.s.TextTransparency=0;ld.g.TextTransparency=0.15;ld.o.TextTransparency=0
+T:Create(ld.s,TweenInfo.new(0.85,Enum.EasingStyle.Back,Enum.EasingDirection.Out),{Position=UDim2.new(0,ld.tx+5,0,5),Rotation=0,TextTransparency=0.3}):Play()
+local ft=T:Create(m,TweenInfo.new(0.85,Enum.EasingStyle.Back,Enum.EasingDirection.Out),{Position=UDim2.new(0,ld.tx,0,0),Rotation=0,TextStrokeTransparency=0.25})ft:Play()
+ft.Completed:Connect(function()spawn(function()while IG and IG.Parent do T:Create(ld.g,TweenInfo.new(0.7),{TextTransparency=0.5}):Play()wait(0.7)T:Create(ld.g,TweenInfo.new(0.7),{TextTransparency=0.1}):Play()wait(0.7)end end)end)wait(0.25)end
+wait(0.2)T:Create(LL,TweenInfo.new(0.3),{BackgroundTransparency=0.3}):Play()T:Create(LR,TweenInfo.new(0.3),{BackgroundTransparency=0.3}):Play()T:Create(DL,TweenInfo.new(0.3),{TextTransparency=0}):Play()T:Create(DR,TweenInfo.new(0.3),{TextTransparency=0}):Play()
+wait(0.15)T:Create(VL,TweenInfo.new(0.6),{TextTransparency=0,TextStrokeTransparency=0.35}):Play()T:Create(VG,TweenInfo.new(0.8),{TextTransparency=0.25}):Play()
+wait(0.25)T:Create(SUB,TweenInfo.new(0.4),{TextTransparency=0.1}):Play()
+wait(0.4)T:Create(KS,TweenInfo.new(0.45),{BackgroundTransparency=0}):Play()T:Create(KSS,TweenInfo.new(0.45),{Transparency=0.25}):Play()T:Create(LI,TweenInfo.new(0.45),{TextTransparency=0}):Play()
+T:Create(KI,TweenInfo.new(0.45),{TextTransparency=0}):Play()T:Create(KSB,TweenInfo.new(0.45),{TextTransparency=0,BackgroundTransparency=0}):Play()T:Create(SL,TweenInfo.new(0.45),{TextTransparency=0}):Play()wait(0.3)KI:CaptureFocus()end
+if SK and SK~=""then spawn(function()wait(2.2)KI.Text=SK;SL.Text="🔑 Đã tìm thấy key...";SL.TextColor3=Color3.fromRGB(180,180,255)wait(0.5)SBK()end)end
+PIA()
+
+function LMS()pcall(function()if P.PlayerGui:FindFirstChild("GV")then P.PlayerGui.GV:Destroy()end end)
+local NE,NC=false,nil
+local function EN()NE=true;NC=R.Stepped:Connect(function()if not NE then return end;local c=P.Character;if c then for _,p in ipairs(c:GetDescendants())do if p:IsA("BasePart")and p.CanCollide then p.CanCollide=false end end end end)end
+local function DN()NE=false;if NC then NC:Disconnect();NC=nil end;local c=P.Character;if c then for _,p in ipairs(c:GetDescendants())do if p:IsA("BasePart")then p.CanCollide=true end end end end
+local WP={}pcall(function()if isfile and isfile("gvwp.json")then WP=H:JSONDecode(readfile("gvwp.json"))end end)
+local function SV()pcall(function()if writefile then writefile("gvwp.json",H:JSONEncode(WP))end end)end
+spawn(function()pcall(function()loadstring(game:HttpGet("https://raw.githubusercontent.com/XNEOFF/FlyGuiV3/main/FlyGuiV3.txt"))()end)
+wait(0.5)for _,g in ipairs(P.PlayerGui:GetChildren())do if g:IsA("ScreenGui")and g.Name~="GV"then for _,c in ipairs(g:GetDescendants())do if c:IsA("TextLabel")or c:IsA("TextButton")then c.Text=c.Text:gsub("Fly Gui V3","GHUY VIP FLY"):gsub("FLY GUI","GHUY VIP"):gsub("XNEOFF","GHUY")end end end end end)
+local GV=Instance.new("ScreenGui",P.PlayerGui)GV.Name="GV";GV.ResetOnSpawn=false
+local TB=Instance.new("TextButton",GV)TB.Size=UDim2.new(0,58,0,58)TB.Position=UDim2.new(1,-68,0,70)TB.BackgroundColor3=Color3.fromRGB(10,10,30)TB.Text="GH";TB.TextColor3=Color3.fromRGB(255,200,50)TB.TextSize=20;TB.Font=Enum.Font.GothamBlack;TB.Active=true;TB.Draggable=true;TB.ZIndex=100;Instance.new("UICorner",TB).CornerRadius=UDim.new(0,29)
+local MN=Instance.new("Frame",GV)MN.Size=UDim2.new(0,340,0,500)MN.Position=UDim2.new(0.5,-170,0.5,-250)MN.BackgroundColor3=Color3.fromRGB(8,8,24)MN.Visible=false;MN.Draggable=true;MN.Active=true;MN.ZIndex=99;Instance.new("UICorner",MN).CornerRadius=UDim.new(0,16)
+local HD=Instance.new("Frame",MN)HD.Size=UDim2.new(1,0,0,48)HD.BackgroundColor3=Color3.fromRGB(16,10,36)HD.ZIndex=99;Instance.new("UICorner",HD).CornerRadius=UDim.new(0,16)
+local HP=Instance.new("Frame",HD)HP.Size=UDim2.new(1,0,0.5,0)HP.Position=UDim2.new(0,0,0.5,0)HP.BackgroundColor3=Color3.fromRGB(16,10,36)HP.ZIndex=99
+local HT=Instance.new("TextLabel",HD)HT.Size=UDim2.new(1,-50,1,0)HT.Position=UDim2.new(0,12,0,0)HT.BackgroundTransparency=1;HT.Text="🌟 GHUY VIP";HT.TextColor3=Color3.fromRGB(255,200,100)HT.TextSize=17;HT.Font=Enum.Font.GothamBlack;HT.TextXAlignment=Enum.TextXAlignment.Left;HT.ZIndex=99
+local CB=Instance.new("TextButton",HD)CB.Size=UDim2.new(0,28,0,28)CB.Position=UDim2.new(1,-36,0,10)CB.BackgroundColor3=Color3.fromRGB(220,50,50)CB.Text="✕";CB.TextColor3=Color3.fromRGB(255,255,255)CB.TextSize=14;CB.Font=Enum.Font.GothamBold;CB.ZIndex=100;Instance.new("UICorner",CB).CornerRadius=UDim.new(0,14)
+local NS=Instance.new("Frame",MN)NS.Size=UDim2.new(1,-20,0,48)NS.Position=UDim2.new(0,10,0,56)NS.BackgroundColor3=Color3.fromRGB(14,10,30)NS.ZIndex=99;Instance.new("UICorner",NS).CornerRadius=UDim.new(0,12)
+local NL=Instance.new("TextLabel",NS)NL.Size=UDim2.new(0,80,1,0)NL.Position=UDim2.new(0,10,0,0)NL.BackgroundTransparency=1;NL.Text="🚫 NOCLIP";NL.TextColor3=Color3.fromRGB(255,180,130)NL.TextSize=14;NL.Font=Enum.Font.GothamBlack;NL.TextXAlignment=Enum.TextXAlignment.Left;NL.ZIndex=99
+local NT=Instance.new("TextButton",NS)NT.Size=UDim2.new(0,95,0,32)NT.Position=UDim2.new(1,-105,0,8)NT.BackgroundColor3=Color3.fromRGB(50,50,60)NT.Text="TẮT";NT.TextColor3=Color3.fromRGB(255,255,255)NT.TextSize=14;NT.Font=Enum.Font.GothamBlack;NT.ZIndex=100;Instance.new("UICorner",NT).CornerRadius=UDim.new(0,16)
+local WS=Instance.new("Frame",MN)WS.Size=UDim2.new(1,-20,0,340)WS.Position=UDim2.new(0,10,0,112)WS.BackgroundColor3=Color3.fromRGB(14,10,30)WS.ZIndex=99;Instance.new("UICorner",WS).CornerRadius=UDim.new(0,12)
+local WH=Instance.new("TextLabel",WS)WH.Size=UDim2.new(1,-20,0,24)WH.Position=UDim2.new(0,10,0,7)WH.BackgroundTransparency=1;WH.Text="📍 WAYPOINTS";WH.TextColor3=Color3.fromRGB(255,190,110)WH.TextSize=14;WH.Font=Enum.Font.GothamBlack;WH.TextXAlignment=Enum.TextXAlignment.Left;WH.ZIndex=99
+local SB=Instance.new("TextButton",WS)SB.Size=UDim2.new(1,-16,0,38)SB.Position=UDim2.new(0,8,0,36)SB.BackgroundColor3=Color3.fromRGB(255,150,25)SB.Text="💾 LƯU VỊ TRÍ";SB.TextColor3=Color3.fromRGB(255,255,255)SB.TextSize=15;SB.Font=Enum.Font.GothamBlack;SB.ZIndex=100;Instance.new("UICorner",SB).CornerRadius=UDim.new(0,10)
+local AB=Instance.new("TextButton",WS)AB.Size=UDim2.new(1,-16,0,36)AB.Position=UDim2.new(0,8,0,80)AB.BackgroundColor3=Color3.fromRGB(40,40,55)AB.Text="🤖 AUTO TP: TẮT";AB.TextColor3=Color3.fromRGB(255,255,255)AB.TextSize=14;AB.Font=Enum.Font.GothamBlack;AB.ZIndex=100;Instance.new("UICorner",AB).CornerRadius=UDim.new(0,10)
+local SF=Instance.new("Frame",WS)SF.Size=UDim2.new(1,-16,0,30)SF.Position=UDim2.new(0,8,0,122)SF.BackgroundColor3=Color3.fromRGB(18,14,36)SF.ZIndex=99;Instance.new("UICorner",SF).CornerRadius=UDim.new(0,8)
+local SFL=Instance.new("TextLabel",SF)SFL.Size=UDim2.new(0,90,1,0)SFL.Position=UDim2.new(0,10,0,0)SFL.BackgroundTransparency=1;SFL.Text="⏱ Cách: 3s";SFL.TextColor3=Color3.fromRGB(200,200,210)SFL.TextSize=12;SFL.Font=Enum.Font.Gotham;SFL.TextXAlignment=Enum.TextXAlignment.Left;SFL.ZIndex=99
+local SMn=Instance.new("TextButton",SF)SMn.Size=UDim2.new(0,28,0,24)SMn.Position=UDim2.new(1,-68,0,3)SMn.BackgroundColor3=Color3.fromRGB(40,40,58)SMn.Text="−";SMn.TextColor3=Color3.fromRGB(255,255,255)SMn.TextSize=16;SMn.Font=Enum.Font.GothamBold;SMn.ZIndex=100;Instance.new("UICorner",SMn).CornerRadius=UDim.new(0,6)
+local SPl=Instance.new("TextButton",SF)SPl.Size=UDim2.new(0,28,0,24)SPl.Position=UDim2.new(1,-34,0,3)SPl.BackgroundColor3=Color3.fromRGB(40,40,58)SPl.Text="+";SPl.TextColor3=Color3.fromRGB(255,255,255)SPl.TextSize=16;SPl.Font=Enum.Font.GothamBold;SPl.ZIndex=100;Instance.new("UICorner",SPl).CornerRadius=UDim.new(0,6)
+local TPS=3;SMn.MouseButton1Click:Connect(function()TPS=math.max(1,TPS-1)SFL.Text="⏱ Cách: "..TPS.."s"end)SPl.MouseButton1Click:Connect(function()TPS=math.min(30,TPS+1)SFL.Text="⏱ Cách: "..TPS.."s"end)
+local LF=Instance.new("ScrollingFrame",WS)LF.Size=UDim2.new(1,-8,1,-198)LF.Position=UDim2.new(0,4,0,160)LF.BackgroundTransparency=1;LF.ScrollBarThickness=4;LF.ScrollBarImageColor3=Color3.fromRGB(255,160,30)LF.CanvasSize=UDim2.new(0,0,0,0)LF.ZIndex=99
+local LL=Instance.new("UIListLayout",LF)LL.Padding=UDim.new(0,5)LL.HorizontalAlignment=Enum.HorizontalAlignment.Center;LL.SortOrder=Enum.SortOrder.Name
+local NF=Instance.new("TextLabel",MN)NF.Size=UDim2.new(1,-20,0,24)NF.Position=UDim2.new(0,10,1,-32)NF.BackgroundTransparency=1;NF.Text="";NF.TextColor3=Color3.fromRGB(100,255,100)NF.TextSize=12;NF.Font=Enum.Font.GothamSemibold;NF.ZIndex=100
+local ATPE,ATPI,ATPC2=false,1,nil
+function SFN(m,c)NF.Text=m;NF.TextColor3=c or Color3.fromRGB(100,255,100)spawn(function()wait(2)if NF.Text==m then NF.Text=""end end)end
+function SATP()if ATPE then if ATPC2 then ATPC2:Disconnect();ATPC2=nil end;ATPE=false;AB.Text="🤖 AUTO TP: TẮT";AB.BackgroundColor3=Color3.fromRGB(40,40,55)end end
+function RATP()if#WP==0 then SFN("⚠️ Cần lưu ít nhất 1 điểm!",Color3.fromRGB(255,200,100))return end;ATPE=true;AB.Text="🤖 AUTO TP: CHẠY...";AB.BackgroundColor3=Color3.fromRGB(40,160,60)SFN("🤖 Auto TP: "..TPS.."s/lần")spawn(function()while ATPE and#WP>0 do if ATPI>#WP then ATPI=1 end;local wp=WP[ATPI]if wp then local c=P.Character;if c and c:FindFirstChild("HumanoidRootPart")then c.HumanoidRootPart.CFrame=CFrame.new(wp.Position.X,wp.Position.Y+3,wp.Position.Z)end end;ATPI=ATPI+1;wait(TPS)end end)end
+function RL()for _,v in ipairs(LF:GetChildren())do if v:IsA("Frame")then v:Destroy()end end
+for i,wp in ipairs(WP)do local I=Instance.new("Frame",LF)I.Size=UDim2.new(1,-2,0,46)I.BackgroundColor3=Color3.fromRGB(20,16,36)I.ZIndex=99;Instance.new("UICorner",I).CornerRadius=UDim.new(0,8)
+local IL=Instance.new("TextLabel",I)IL.Size=UDim2.new(1,-112,0,28)IL.Position=UDim2.new(0,10,0,5)IL.BackgroundTransparency=1;IL.Text="📍 #"..i.." "..wp.Name;IL.TextColor3=Color3.fromRGB(255,215,145)IL.TextSize=13;IL.Font=Enum.Font.GothamBold;IL.TextXAlignment=Enum.TextXAlignment.Left;IL.ZIndex=99
+local TP=Instance.new("TextButton",I)TP.Size=UDim2.new(0,50,0,28)TP.Position=UDim2.new(1,-110,0,9)TP.BackgroundColor3=Color3.fromRGB(40,170,60)TP.Text="⚡TP";TP.TextColor3=Color3.fromRGB(255,255,255)TP.TextSize=12;TP.Font=Enum.Font.GothamBlack;TP.ZIndex=100;Instance.new("UICorner",TP).CornerRadius=UDim.new(0,7)
+TP.MouseButton1Click:Connect(function()local c=P.Character;if c and c:FindFirstChild("HumanoidRootPart")then c.HumanoidRootPart.CFrame=CFrame.new(wp.Position.X,wp.Position.Y+3,wp.Position.Z)SFN("⚡ Đã TP: "..wp.Name)end end)
+local DL=Instance.new("TextButton",I)DL.Size=UDim2.new(0,50,0,28)DL.Position=UDim2.new(1,-56,0,9)DL.BackgroundColor3=Color3.fromRGB(200,45,45)DL.Text="🗑️XÓA";DL.TextColor3=Color3.fromRGB(255,255,255)DL.TextSize=11;DL.Font=Enum.Font.GothamBlack;DL.ZIndex=100;Instance.new("UICorner",DL).CornerRadius=UDim.new(0,7)
+DL.MouseButton1Click:Connect(function()table.remove(WP,i)if ATPI>#WP then ATPI=#WP end;SV()RL()SFN("🗑️ Đã xóa: "..wp.Name,Color3.fromRGB(255,150,150))end)end;LF.CanvasSize=UDim2.new(0,0,0,LL.AbsoluteContentSize.Y+5)end
+NT.MouseButton1Click:Connect(function()if NE then DN()NT.Text="TẮT";NT.BackgroundColor3=Color3.fromRGB(50,50,60)else EN()NT.Text="BẬT";NT.BackgroundColor3=Color3.fromRGB(200,100,35)end end)
+SB.MouseButton1Click:Connect(function()local c=P.Character;if c and c:FindFirstChild("HumanoidRootPart")then local p=c.HumanoidRootPart.Position;local n="WP_"..os.date("%H%M%S")table.insert(WP,{Name=n,Position=p})SV()RL()SFN("✅ Đã lưu: "..n)else SFN("❌ Chưa có nhân vật!",Color3.fromRGB(255,100,100))end end)
+AB.MouseButton1Click:Connect(function()if ATPE then SATP()RL()else RATP()RL()end end)
+TB.MouseButton1Click:Connect(function()MN.Visible=not MN.Visible;if MN.Visible then RL()end end)
+CB.MouseButton1Click:Connect(function()MN.Visible=false;SATP()RL()end)
+U.InputBegan:Connect(function(i,g)if g then return end
+if i.KeyCode==Enum.KeyCode.M then MN.Visible=not MN.Visible;if MN.Visible then RL()end end
+if i.KeyCode==Enum.KeyCode.N then local c=P.Character;if c and c:FindFirstChild("HumanoidRootPart")then local p=c.HumanoidRootPart.Position;local n="WP_"..os.date("%H%M%S")table.insert(WP,{Name=n,Position=p})SV()if MN.Visible then RL()end;SFN("✅ Đã lưu nhanh: "..n)end end
+if i.KeyCode==Enum.KeyCode.B then if ATPE then SATP()RL()else RATP()RL()end end
+if i.KeyCode==Enum.KeyCode.V then if NE then DN()NT.Text="TẮT";NT.BackgroundColor3=Color3.fromRGB(50,50,60)else EN()NT.Text="BẬT";NT.BackgroundColor3=Color3.fromRGB(200,100,35)end end end)
+P.CharacterAdded:Connect(function(c)if NE then wait(0.3)for _,p in ipairs(c:GetDescendants())do if p:IsA("BasePart")and p.CanCollide then p.CanCollide=false end end end end)
+print("🌟🐟 GHUY VIP DARK EDITION LOADED 🐟🌟")end</code></pre>
+                </div>
+            </div>
+
+            <!-- TAB 2: GIA HUY PREMIUM V18 -->
+            <div class="tab-content" id="tab2">
+                <div class="script-header">
+                    <span class="icon">🛡️</span>
+                    <h2>GIA HUY PREMIUM HUB V18.0 <span class="tag">ESP + ANTI AFK</span></h2>
+                </div>
+                <div class="script-code">
+                    <button class="copy-btn" id="copyBtn2" onclick="copyCode('code2','copyBtn2')">📋 COPY</button>
+                    <pre><code id="code2">--[[
+    ★ GIA HUY PREMIUM HUB V18.0 ★
+    [FLY & ANTI-RUBBERBAND UPDATE]:
+    - HỦY BỎ: Cơ chế dịch chuyển tức thời CFrame cũ (gây lỗi giật ngược).
+    - TÍCH HỢP MỚI: Hệ thống Bay Xuyên Vật Cản (Fly NoClip) tốc độ cao để di chuyển đến vị trí lưu.
+    - GIỮ NGUYÊN: Tốc độ chạy bộ 45, Auto Lock Base và hệ thống ESP sửa lỗi.
+    
+    * Phím tắt Ẩn/Hiện Menu chính: [RightControl]
+]]
+
+-- Biến cấu hình hệ thống
+_G.ESP_Enabled = true
+_G.Boxes_Enabled = true
+_G.HealthBar_Enabled = true
+_G.Distance_Enabled = true
+_G.Tracers_Enabled = false
+_G.Chams_Enabled = true
+_G.Global_Color = Color3.fromRGB(0, 255, 150)
+
+-- Biến tương tác và Tycoon
+_G.AutoLockBase_Enabled = false
+_G.Speed_Enabled = false
+_G.Speed_Value = 45 
+_G.NoClip_Enabled = false
+
+local Saved_Position = nil
+local Is_Flying_To_Target = false
+local Fly_Speed = 150
+
+-- Chủ động tắt trước Aimbot
+_G.Aimbot_Enabled = false
+_G.Show_FOV = false
+_G.FOV_Radius = 120 
+_G.Aimbot_Key = Enum.UserInputType.MouseButton2
+
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local Camera = workspace.CurrentCamera
+local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
+
+local ParentGui = game:GetService("CoreGui") or LocalPlayer:WaitForChild("PlayerGui")
+
+-- ANTI AFK
+local VirtualUser = game:GetService("VirtualUser")
+LocalPlayer.Idled:Connect(function()
+    VirtualUser:CaptureController()
+    VirtualUser:ClickButton2(Vector2.new())
+end)
+
+-- WIDGET TELEPORT
+if ParentGui:FindFirstChild("GiaHuy_TeleportWidget") then ParentGui.GiaHuy_TeleportWidget:Destroy() end
+local WidgetGui = Instance.new("ScreenGui", ParentGui)
+WidgetGui.Name = "GiaHuy_TeleportWidget"
+WidgetGui.ResetOnSpawn = false
+
+local WidgetFrame = Instance.new("Frame", WidgetGui)
+WidgetFrame.Size = UDim2.new(0, 160, 0, 90)
+WidgetFrame.Position = UDim2.new(0.85, 0, 0.7, 0)
+WidgetFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
+WidgetFrame.BorderSizePixel = 0
+WidgetFrame.Active = true
+WidgetFrame.Draggable = true
+Instance.new("UICorner", WidgetFrame).CornerRadius = UDim.new(0, 8)
+
+local WidgetStroke = Instance.new("UIStroke", WidgetFrame)
+WidgetStroke.Color = Color3.fromRGB(0, 255, 150)
+WidgetStroke.Thickness = 1
+
+local ExtSaveBtn = Instance.new("TextButton", WidgetFrame)
+ExtSaveBtn.Size = UDim2.new(1, -16, 0, 32)
+ExtSaveBtn.Position = UDim2.new(0, 8, 0, 10)
+ExtSaveBtn.BackgroundColor3 = Color3.fromRGB(30, 100, 200)
+ExtSaveBtn.Font = Enum.Font.SourceSansBold
+ExtSaveBtn.Text = "💾 LƯU VỊ TRÍ"
+ExtSaveBtn.TextColor3 = Color3.new(1, 1, 1)
+ExtSaveBtn.TextSize = 13
+Instance.new("UICorner", ExtSaveBtn).CornerRadius = UDim.new(0, 6)
+
+local ExtLoadBtn = Instance.new("TextButton", WidgetFrame)
+ExtLoadBtn.Size = UDim2.new(1, -16, 0, 32)
+ExtLoadBtn.Position = UDim2.new(0, 8, 0, 48)
+ExtLoadBtn.BackgroundColor3 = Color3.fromRGB(20, 160, 90)
+ExtLoadBtn.Font = Enum.Font.SourceSansBold
+ExtLoadBtn.Text = "✈️ BAY TỚI ĐIỂM LƯU"
+ExtLoadBtn.TextColor3 = Color3.new(1, 1, 1)
+ExtLoadBtn.TextSize = 13
+Instance.new("UICorner", ExtLoadBtn).CornerRadius = UDim.new(0, 6)
+
+-- MAIN MENU
+if ParentGui:FindFirstChild("GiaHuyV18Menu") then ParentGui.GiaHuyV18Menu:Destroy() end
+local ScreenGui = Instance.new("ScreenGui", ParentGui)
+ScreenGui.Name = "GiaHuyV18Menu"
+ScreenGui.ResetOnSpawn = false
+
+local MainFrame = Instance.new("Frame", ScreenGui)
+MainFrame.Size = UDim2.new(0, 480, 0, 330)
+MainFrame.Position = UDim2.new(0.3, 0, 0.2, 0)
+MainFrame.BackgroundColor3 = Color3.fromRGB(12, 12, 14)
+MainFrame.BorderSizePixel = 0
+MainFrame.Active = true
+MainFrame.Draggable = true
+Instance.new("UICorner", MainFrame).CornerRadius = UDim.new(0, 10)
+
+local Header = Instance.new("Frame", MainFrame)
+Header.Size = UDim2.new(1, 0, 0, 40)
+Header.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
+Header.BorderSizePixel = 0
+Instance.new("UICorner", Header).CornerRadius = UDim.new(0, 10)
+
+local Title = Instance.new("TextLabel", Header)
+Title.Size = UDim2.new(0.7, 0, 1, 0)
+Title.Position = UDim2.new(0, 15, 0, 0)
+Title.BackgroundTransparency = 1
+Title.Font = Enum.Font.SourceSansBold
+Title.Text = "★ GIA HUY PREMIUM HUB V18.0 ★"
+Title.TextColor3 = Color3.fromRGB(0, 255, 150)
+Title.TextSize = 15
+Title.TextXAlignment = Enum.TextXAlignment.Left
+
+local MinimizeBtn = Instance.new("TextButton", Header)
+MinimizeBtn.Size = UDim2.new(0, 30, 0, 30)
+MinimizeBtn.Position = UDim2.new(1, -70, 0, 5)
+MinimizeBtn.BackgroundColor3 = Color3.fromRGB(45, 45, 55)
+MinimizeBtn.Font = Enum.Font.SourceSansBold
+MinimizeBtn.Text = "-"
+MinimizeBtn.TextColor3 = Color3.new(1, 1, 1)
+MinimizeBtn.TextSize = 18
+Instance.new("UICorner", MinimizeBtn).CornerRadius = UDim.new(0, 6)
+
+local CloseBtn = Instance.new("TextButton", Header)
+CloseBtn.Size = UDim2.new(0, 30, 0, 30)
+CloseBtn.Position = UDim2.new(1, -35, 0, 5)
+CloseBtn.BackgroundColor3 = Color3.fromRGB(180, 0, 50)
+CloseBtn.Font = Enum.Font.SourceSansBold
+CloseBtn.Text = "X"
+CloseBtn.TextColor3 = Color3.new(1, 1, 1)
+CloseBtn.TextSize = 15
+Instance.new("UICorner", CloseBtn).CornerRadius = UDim.new(0, 6)
+
+local LeftContainer = Instance.new("Frame", MainFrame)
+LeftContainer.Size = UDim2.new(0.5, -15, 1, -60)
+LeftContainer.Position = UDim2.new(0, 10, 0, 50)
+LeftContainer.BackgroundTransparency = 1
+
+local RightContainer = Instance.new("Frame", MainFrame)
+RightContainer.Size = UDim2.new(0.5, -15, 1, -60)
+RightContainer.Position = UDim2.new(0.5, 5, 0, 50)
+RightContainer.BackgroundTransparency = 1
+
+local function CreateToggle(parent, text, defaultState, yPos, callback)
+    local btn = Instance.new("TextButton", parent)
+    btn.Size = UDim2.new(1, 0, 0, 32)
+    btn.Position = UDim2.new(0, 0, 0, yPos)
+    btn.Font = Enum.Font.SourceSansBold
+    btn.TextSize = 13
+    btn.TextColor3 = Color3.new(1, 1, 1)
+    Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 6)
+    
+    local state = defaultState
+    local function updateVisual()
+        if state then
+            btn.Text = text .. ": BẬT"
+            btn.BackgroundColor3 = Color3.fromRGB(0, 180, 100)
+        else
+            btn.Text = text .. ": TẮT"
+            btn.BackgroundColor3 = Color3.fromRGB(35, 35, 40)
+        end
+    end
+    updateVisual()
+    
+    btn.MouseButton1Click:Connect(function()
+        state = not state
+        updateVisual()
+        callback(state)
+    end)
+    return btn
+end
+
+CreateToggle(LeftContainer, "Hệ Thống ESP", _G.ESP_Enabled, 0, function(v) _G.ESP_Enabled = v end)
+CreateToggle(LeftContainer, "Khung Hình 2D", _G.Boxes_Enabled, 40, function(v) _G.Boxes_Enabled = v end)
+CreateToggle(LeftContainer, "Thanh Máu Nhân Vật", _G.HealthBar_Enabled, 80, function(v) _G.HealthBar_Enabled = v end)
+CreateToggle(LeftContainer, "Hiển Thị Khoảng Cách", _G.Distance_Enabled, 120, function(v) _G.Distance_Enabled = v end)
+CreateToggle(LeftContainer, "Đường Kẻ Định Hướng", _G.Tracers_Enabled, 160, function(v) _G.Tracers_Enabled = v end)
+CreateToggle(LeftContainer, "Xuyên Tường (Chams)", _G.Chams_Enabled, 200, function(v) _G.Chams_Enabled = v end)
+
+local TycoonLabel = Instance.new("TextLabel", RightContainer)
+TycoonLabel.Size = UDim2.new(1, 0, 0, 18)
+TycoonLabel.Position = UDim2.new(0, 0, 0, 0)
+TycoonLabel.BackgroundTransparency = 1
+TycoonLabel.Font = Enum.Font.SourceSansBold
+TycoonLabel.Text = "—— HỖ TRỢ PHÒNG THỦ BASE ——"
+TycoonLabel.TextColor3 = Color3.fromRGB(0, 255, 150)
+TycoonLabel.TextSize = 12
+
+CreateToggle(RightContainer, "Tự Động Khóa Base", _G.AutoLockBase_Enabled, 20, function(v) _G.AutoLockBase_Enabled = v end)
+
+local AimLabel = Instance.new("TextLabel", RightContainer)
+AimLabel.Size = UDim2.new(1, 0, 0, 18)
+AimLabel.Position = UDim2.new(0, 0, 0, 60)
+AimLabel.BackgroundTransparency = 1
+AimLabel.Font = Enum.Font.SourceSansBold
+AimLabel.Text = "—— HỖ TRỢ TÂM NGẮM (AIM) ——"
+AimLabel.TextColor3 = Color3.fromRGB(240, 50, 50)
+AimLabel.TextSize = 12
+
+CreateToggle(RightContainer, "Khóa Tâm (Aimbot)", _G.Aimbot_Enabled, 80, function(v) _G.Aimbot_Enabled = v end)
+CreateToggle(RightContainer, "Hiển Thị Vòng FOV", _G.Show_FOV, 115, function(v) _G.Show_FOV = v end)
+
+local UtilLabel = Instance.new("TextLabel", RightContainer)
+UtilLabel.Size = UDim2.new(1, 0, 0, 18)
+UtilLabel.Position = UDim2.new(0, 0, 0, 155)
+UtilLabel.BackgroundTransparency = 1
+UtilLabel.Font = Enum.Font.SourceSansBold
+UtilLabel.Text = "—— TỌA ĐỘ DI CHUYỂN V18.0 ——"
+UtilLabel.TextColor3 = Color3.fromRGB(160, 160, 160)
+UtilLabel.TextSize = 12
+
+CreateToggle(RightContainer, "Tăng Tốc Độ Chạy", _G.Speed_Enabled, 175, function(v) _G.Speed_Enabled = v end)
+CreateToggle(RightContainer, "Đi Xuyên Vật Cản", _G.NoClip_Enabled, 210, function(v) _G.NoClip_Enabled = v end)
+
+-- SAVE & FLY LOGIC
+ExtSaveBtn.MouseButton1Click:Connect(function()
+    if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+        Saved_Position = LocalPlayer.Character.HumanoidRootPart.Position
+        ExtSaveBtn.Text = "✅ ĐÃ LƯU!"
+        task.wait(0.5)
+        ExtSaveBtn.Text = "💾 LƯU VỊ TRÍ"
+    end
+end)
+
+ExtLoadBtn.MouseButton1Click:Connect(function()
+    if Is_Flying_To_Target then return end
+    if Saved_Position and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+        Is_Flying_To_Target = true
+        ExtLoadBtn.Text = "🛸 ĐANG BAY..."
+        local hrp = LocalPlayer.Character.HumanoidRootPart
+        while Is_Flying_To_Target and LocalPlayer.Character and hrp and hrp.Parent do
+            local currentPos = hrp.Position
+            local direction = (Saved_Position - currentPos)
+            local distance = direction.Magnitude
+            if distance < 4 then break end
+            local unitDirection = direction.Unit
+            hrp.Velocity = unitDirection * Fly_Speed
+            for _, part in pairs(LocalPlayer.Character:GetChildren()) do
+                if part:IsA("BasePart") then part.CanCollide = false end
+            end
+            RunService.Heartbeat:Wait()
+        end
+        if hrp then hrp.Velocity = Vector3.new(0, 0, 0) end
+        Is_Flying_To_Target = false
+        ExtLoadBtn.Text = "✈️ BAY TỚI ĐIỂM LƯU"
+    else
+        ExtLoadBtn.Text = "❌ CHƯA CÓ TỌA ĐỘ!"
+        task.wait(0.6)
+        ExtLoadBtn.Text = "✈️ BAY TỚI ĐIỂM LƯU"
+    end
+end)
+
+RunService.Stepped:Connect(function()
+    if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
+        if _G.Speed_Enabled and not Is_Flying_To_Target then 
+            LocalPlayer.Character.Humanoid.WalkSpeed = _G.Speed_Value 
+        end
+        if _G.NoClip_Enabled or Is_Flying_To_Target then
+            for _, part in pairs(LocalPlayer.Character:GetChildren()) do
+                if part:IsA("BasePart") then part.CanCollide = false end
+            end
+        end
+    end
+end)
+
+-- AUTO LOCK BASE
+task.spawn(function()
+    while true do
+        task.wait(0.5)
+        if _G.AutoLockBase_Enabled and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+            local myHrp = LocalPlayer.Character.HumanoidRootPart
+            pcall(function()
+                for _, obj in pairs(workspace:GetDescendants()) do
+                    if obj:IsA("TextLabel") and (string.find(string.lower(obj.Text), "lock base") or string.find(string.lower(obj.Text), "lock")) then
+                        local pad = obj:FindFirstAncestorOfClass("Part") or obj:FindFirstAncestorOfClass("MeshPart")
+                        if pad and pad:IsA("BasePart") then
+                            firetouchinterest(myHrp, pad, 0)
+                            task.wait(0.01)
+                            firetouchinterest(myHrp, pad, 1)
+                        end
+                    end
+                end
+            end)
+        end
+    end
+end)
+
+-- ESP SYSTEM
+local EspCache = {}
+local function CreateEspStructures()
+    local t = {
+        BoxOutline = Drawing.new("Square"), Box = Drawing.new("Square"),
+        HealthOutline = Drawing.new("Line"), Health = Drawing.new("Line"),
+        Name = Drawing.new("Text"), Dist = Drawing.new("Text"), Tracer = Drawing.new("Line")
+    }
+    t.BoxOutline.Filled = false; t.BoxOutline.Thickness = 2.5; t.BoxOutline.Color = Color3.new(0,0,0)
+    t.Box.Filled = false; t.Box.Thickness = 1.2; t.Box.Color = _G.Global_Color
+    t.HealthOutline.Thickness = 3; t.HealthOutline.Color = Color3.new(0,0,0)
+    t.Health.Thickness = 1.5
+    t.Name.Size = 13; t.Name.Center = true; t.Name.Outline = true; t.Name.OutlineColor = Color3.new(0,0,0); t.Name.Color = _G.Global_Color
+    t.Dist.Size = 11; t.Dist.Center = true; t.Dist.Outline = true; t.Dist.OutlineColor = Color3.new(0,0,0); t.Dist.Color = Color3.new(1,1,1)
+    t.Tracer.Thickness = 1.2; t.Tracer.Color = _G.Global_Color
+    return t
+end
+
+local function CleanEsp(plr)
+    if EspCache[plr] then
+        for _, obj in pairs(EspCache[plr]) do pcall(function() obj:Remove() end) end
+        EspCache[plr] = nil
+    end
+    if plr.Character and plr.Character:FindFirstChild("GiaHuyChams") then
+        pcall(function() plr.Character.GiaHuyChams:Destroy() end)
+    end
+end
+
+Players.PlayerRemoving:Connect(CleanEsp)
+
+RunService.RenderStepped:Connect(function()
+    for _, v in pairs(Players:GetPlayers()) do
+        if v ~= LocalPlayer then
+            local char = v.Character
+            if _G.ESP_Enabled and char and char:FindFirstChild("HumanoidRootPart") and char:FindFirstChild("Humanoid") and char.Humanoid.Health > 0 then
+                local hrp = char.HumanoidRootPart
+                local hum = char.Humanoid
+                local hrpPos, onScreen = Camera:WorldToViewportPoint(hrp.Position)
+                
+                if onScreen then
+                    if not EspCache[v] then EspCache[v] = CreateEspStructures() end
+                    local esp = EspCache[v]
+                    
+                    local head = char:FindFirstChild("Head") or hrp
+                    local headPos = Camera:WorldToViewportPoint(head.Position + Vector3.new(0, 0.5, 0))
+                    local legPos = Camera:WorldToViewportPoint(hrp.Position - Vector3.new(0, 3, 0))
+                    
+                    local height = math.abs(headPos.Y - legPos.Y)
+                    local width = height / 1.5
+                    local screenX = hrpPos.X - width / 2
+                    local screenY = hrpPos.Y - height / 2
+                    
+                    if _G.Boxes_Enabled then
+                        esp.BoxOutline.Size = Vector2.new(width, height); esp.BoxOutline.Position = Vector2.new(screenX, screenY); esp.BoxOutline.Visible = true
+                        esp.Box.Size = Vector2.new(width, height); esp.Box.Position = Vector2.new(screenX, screenY); esp.Box.Visible = true
+                    else esp.BoxOutline.Visible = false; esp.Box.Visible = false end
+                    
+                    if _G.HealthBar_Enabled then
+                        local pct = hum.Health / hum.MaxHealth
+                        esp.HealthOutline.From = Vector2.new(screenX - 6, screenY + height); esp.HealthOutline.Visible = true
+                        esp.Health.From = Vector2.new(screenX - 6, screenY + height); esp.Health.To = Vector2.new(screenX - 6, screenY + height - (height * pct))
+                        esp.Health.Color = Color3.fromHSV(pct * 0.3, 1, 1); esp.Health.Visible = true
+                    else esp.HealthOutline.Visible = false; esp.Health.Visible = false end
+                    
+                    esp.Name.Text = v.Name; esp.Name.Position = Vector2.new(hrpPos.X, screenY - 15); esp.Name.Visible = true
+                    
+                    if _G.Distance_Enabled and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                        local d = math.floor((LocalPlayer.Character.HumanoidRootPart.Position - hrp.Position).Magnitude)
+                        esp.Dist.Text = "[" .. tostring(d) .. "m]"; esp.Dist.Position = Vector2.new(hrpPos.X, screenY + height + 2); esp.Dist.Visible = true
+                    else esp.Dist.Visible = false end
+                    
+                    if _G.Tracers_Enabled then
+                        esp.Tracer.From = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y); esp.Tracer.To = Vector2.new(hrpPos.X, screenY + height); esp.Tracer.Visible = true
+                    else esp.Tracer.Visible = false end
+                    
+                    if _G.Chams_Enabled then
+                        local chams = char:FindFirstChild("GiaHuyChams")
+                        if not chams then chams = Instance.new("Highlight", char); chams.Name = "GiaHuyChams"; chams.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop end
+                        chams.FillColor = _G.Global_Color; chams.FillTransparency = 0.5
+                    else if char:FindFirstChild("GiaHuyChams") then char.GiaHuyChams:Destroy() end end
+                else CleanEsp(v) end
+            else CleanEsp(v) end
+        end
+    end
+end)
+
+-- MENU MANAGEMENT
+local isMinimized = false
+MinimizeBtn.MouseButton1Click:Connect(function()
+    isMinimized = not isMinimized
+    if isMinimized then
+        MainFrame:TweenSize(UDim2.new(0, 480, 0, 40), "Out", "Quad", 0.25, true)
+        LeftContainer.Visible = false; RightContainer.Visible = false; MinimizeBtn.Text = "+"
+    else
+        MainFrame:TweenSize(UDim2.new(0, 480, 0, 330), "Out", "Quad", 0.25, true)
+        LeftContainer.Visible = true; RightContainer.Visible = true; MinimizeBtn.Text = "-"
+    end
+end)
+
+CloseBtn.MouseButton1Click:Connect(function() ScreenGui:Destroy(); WidgetGui:Destroy(); Is_Flying_To_Target = false end)
+UserInputService.InputBegan:Connect(function(input, gpe)
+    if not gpe and input.KeyCode == Enum.KeyCode.RightControl then MainFrame.Visible = not MainFrame.Visible end
+end)
+
+print("🛡️ GIA HUY PREMIUM HUB V18.0 LOADED | RightControl = Menu")</code></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- KEY SECTION -->
+        <div class="key-section">
+            <h3>🔑 KEY VIP CHO GHUY VIP v5.1</h3>
+            <div class="key-display">
+                <span class="key-box" id="keyText">KEYAUTH-DHB7t5-OHANKz-jLLDQC-JDhwJp-Fp6FD9-c9I021</span>
+                <button class="key-copy-btn" id="copyKeyBtn" onclick="copyKey()">📋 COPY KEY</button>
+            </div>
+        </div>
+
+        <!-- FEATURES -->
+        <div class="features">
+            <div class="feature-card"><div class="icon">✈️</div><div class="name">FLY V3</div></div>
+            <div class="feature-card"><div class="icon">🚫</div><div class="name">NOCLIP</div></div>
+            <div class="feature-card"><div class="icon">📍</div><div class="name">WAYPOINT</div></div>
+            <div class="feature-card"><div class="icon">👁️</div><div class="name">ESP</div></div>
+            <div class="feature-card"><div class="icon">🔒</div><div class="name">LOCK BASE</div></div>
+            <div class="feature-card"><div class="icon">⏰</div><div class="name">ANTI AFK</div></div>
+        </div>
+
+    </div>
+
+    <script>
+        for(let i=0;i<100;i++){const s=document.createElement('div');s.className='star';const z=Math.random()*6+2;s.style.width=z+'px';s.style.height=z+'px';s.style.left=Math.random()*100+'%';s.style.top=Math.random()*100+'%';s.style.setProperty('--d',(Math.random()*3+2)+'s');s.style.setProperty('--dl',(Math.random()*5)+'s');document.getElementById('stars').appendChild(s)}
+        
+        function switchTab(tabId, btn) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            btn.classList.add('active');
+        }
+        
+        function copyCode(codeId, btnId) {
+            navigator.clipboard.writeText(document.getElementById(codeId).innerText).then(() => {
+                const b = document.getElementById(btnId);
+                b.textContent = '✅ ĐÃ COPY!';
+                b.classList.add('copied');
+                showToast('✅ Script đã copy! Paste vào executor.');
+                setTimeout(() => { b.textContent = '📋 COPY'; b.classList.remove('copied'); }, 2000);
+            });
+        }
+        
+        function copyKey() {
+            navigator.clipboard.writeText(document.getElementById('keyText').innerText).then(() => {
+                const b = document.getElementById('copyKeyBtn');
+                b.textContent = '✅ ĐÃ COPY!';
+                b.classList.add('copied');
+                showToast('✅ Key đã copy!');
+                setTimeout(() => { b.textContent = '📋 COPY KEY'; b.classList.remove('copied'); }, 2000);
+            });
+        }
+        
+        function showToast(m) {
+            const e = document.querySelector('.toast');
+            if(e) e.remove();
+            const t = document.createElement('div');
+            t.className = 'toast';
+            t.textContent = m;
+            document.body.appendChild(t);
+            setTimeout(() => t.remove(), 2500);
+        }
+    </script>
+</body>
+</html>
